@@ -35,3 +35,8 @@ SecurityEvent
 // Trigger if a single IP hits more than 10 distinct usernames
 | where UniqueTargetAccounts > 10
 | sort by UniqueTargetAccounts desc
+
+Alternatively
+
+Lock Attempts from Custom IP Address, Ban Passwords, etc in Sentinel > Security > Authentication Methods >  Manage > Password Protection
+
