@@ -5,7 +5,7 @@ Using Sentinel to Detect and Investigate Suspicious Authentication Behavior
 
 **Environment:** Azure Resource Group, virtual network, Windows VM `CORP-EAST-US-1`, Log Analytics Workspace `LAW-soc-lab`, Data Collection Rule `DCR-Windows`, and Microsoft Sentinel.
 
-**Test scenario:** Generate controlled failed authentication attempts against the Windows VM so there is known suspicious activity to investigate.
+**Test scenario:** Remove the NSG firewall and the endpoint firewall. Either wait for login attempts or generate controlled failed authentication attempts against the Windows VM so there is known suspicious activity to investigate.
 
 **Telemetry collection:** Configure the VM and Data Collection Rule to forward Windows Security events into Log Analytics/Sentinel.
 
@@ -18,8 +18,6 @@ SecurityEvent
 | order by TimeGenerated desc
 
 **Finding:** Confirm Sentinel received the authentication events generated during the test and that the failed logons could be identified and analyzed through KQL.
-
-**Mitigation** Add KQL query to Sentinel/Defender to block password spray attempts
 
 // Password Spray Detection via Windows Security Events
 SecurityEvent
@@ -36,7 +34,10 @@ SecurityEvent
 | where UniqueTargetAccounts > 10
 | sort by UniqueTargetAccounts desc
 
-Alternatively
-
+**Mitigation** 
 Lock Attempts from Custom IP Address, Ban Passwords, etc in Sentinel > Security > Authentication Methods >  Manage > Password Protection
+
+**Conclusion**
+Remove the Allow Any rule from the NSG, replace with original RDP rule.
+Turn the Endpoint Firewall back on.
 
