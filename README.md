@@ -28,7 +28,7 @@ SecurityEvent
 // Filter out null or system IP addresses
 | where isnotempty(IpAddress) and IpAddress != "-" and IpAddress != "127.0.0.1"
 | summarize 
-    TotalFailures = count(), 
+    TotalFailures = count(5), 
     UniqueTargetAccounts = dcount(TargetAccount), 
     AttemptedAccounts = make_set(TargetAccount, 20) 
     by IpAddress, bin(TimeGenerated, 1h)
