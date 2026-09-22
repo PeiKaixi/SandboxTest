@@ -12,3 +12,20 @@ Using Sentinel to Detect and Investigate Suspicious Authentication Behavior
 **Investigation:** Query `SecurityEvent` for Event ID 4625, review the affected account, timestamp, host, activity, and source IP information, then summarize failed attempts by target account to identify repeated authentication failures.
 
 **Finding:** Confirm Sentinel received the authentication events generated during the test and that the failed logons could be identified and analyzed through KQL.
+
+**Mitigation** Add KQL query to Sentinel/Defender to block password spray attempts
+
+// Password Spray Detection via Windows Security Events
+SecurityEvent
+| where TimeGenerated > ago(1d)
+| where EventID == 4625
+// Filter out null or system IP addresses
+| where isnotempty(IpAddress) and IpAddress != "-" and IpAddress != "127.0.0.1"
+| summarize 
+    TotalFailures = count(), 
+    UniqueTargetAccounts = dcount(TargetAccount), 
+    AttemptedAccounts = make_set(TargetAccount, 20) 
+    by IpAddress, bin(TimeGenerated, 1h)
+// Trigger if a single IP hits more than 10 distinct usernames
+| where UniqueTargetAccounts > 10
+| sort by UniqueTargetAccounts desc
