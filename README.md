@@ -11,6 +11,12 @@ Using Sentinel to Detect and Investigate Suspicious Authentication Behavior
 
 **Investigation:** Query `SecurityEvent` for Event ID 4625, review the affected account, timestamp, host, activity, and source IP information, then summarize failed attempts by target account to identify repeated authentication failures.
 
+SecurityEvent
+| where TimeGenerated > ago(1d)
+|where EventID == "4625"
+| project TimeGenerated, EventID, Account, Computer, IpAddress, Activity
+| order by TimeGenerated desc
+
 **Finding:** Confirm Sentinel received the authentication events generated during the test and that the failed logons could be identified and analyzed through KQL.
 
 **Mitigation** Add KQL query to Sentinel/Defender to block password spray attempts
