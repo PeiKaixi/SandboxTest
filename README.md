@@ -26,7 +26,7 @@ SecurityEvent
 // Filter out null or system IP addresses
 | where isnotempty(IpAddress) and IpAddress != "-" and IpAddress != "127.0.0.1"
 | summarize 
-    TotalFailures = count(5), 
+    TotalFailures = count(), 
     UniqueTargetAccounts = dcount(TargetAccount), 
     AttemptedAccounts = make_set(TargetAccount, 20) 
     by IpAddress, bin(TimeGenerated, 1h)
@@ -36,6 +36,7 @@ SecurityEvent
 
 **Mitigation** 
 Lock Attempts from Custom IP Address, Ban Passwords, etc in Sentinel > Security > Authentication Methods >  Manage > Password Protection
+Create event alerts in Sentinel, they will trigger Incidents in Sentinel > Incidents and Alerts > Incidents
 
 **Conclusion**
 Remove the Allow Any rule from the NSG, replace with original RDP rule.
